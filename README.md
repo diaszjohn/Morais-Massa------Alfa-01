@@ -1,2 +1,101 @@
 # Morais-Massa------Alfa-01
 Projeto Pessoal e Profissional de Cardápio digital e pedidos via WhatsApp da Morais &amp; Massa Torteria (Parnaíba-PI).
+# 🍰 Morais & Massa Torteria — Cardápio Digital
+
+Cardápio digital responsivo e sistema de pedidos online desenvolvido para a **Morais & Massa Torteria** (Parnaíba - PI e região)[cite: 12, 14]. O projeto permite que os clientes naveguem entre opções de pronta-entrega e encomendas, montem a sacola em tempo real e enviem o pedido estruturado diretamente para o WhatsApp da loja.
+
+> *"Não fazemos apenas sobremesas. Criamos sabores que você não esquece."*[cite: 12]
+
+---
+
+## ✨ Funcionalidades
+
+- **Vitrine Categorizada:** Filtro rápido entre *Todos os Sabores*, *Pronta-Entrega* e *Tortas Inteiras (Encomenda)*[cite: 12].
+- **Regras de Negócio Automatizadas:**
+  - Alerta automático na sacola quando há itens sob encomenda (exigência de 1 dia de antecedência e pagamento antecipado).
+  - Cálculo dinâmico de subtotal e taxa de entrega (fixa de **R$ 7,00 para Parnaíba-PI** ou *a consultar* para cidades vizinhas)[cite: 12].
+  - Modalidade exclusiva de **Delivery** (sem retirada no local)[cite: 12].
+- **Checkout Inteligente:**
+  - Validação de dados do cliente e endereço completo.
+  - Seleção de forma de pagamento (Pix, Cartão de Crédito, Cartão de Débito ou Dinheiro).
+  - Campo condicional de **troco** exibido apenas quando o cliente seleciona pagamento em dinheiro.
+- **Integração Direta com WhatsApp:** Formatação automática do resumo completo do pedido com envio em um clique para o atendimento `(86) 99556-3868`[cite: 14].
+- **Indicador de Funcionamento:** Badge dinâmica no cabeçalho informando o status de atendimento (`08h às 22h`)[cite: 12].
+- **Identidade Visual Premium:** Interface *dark mode* em tons de preto, café escuro e dourado metálico (`#0b0806` e `#d99b52`), alinhada à marca.
+
+---
+
+## 🧁 Catálogo Configurado
+
+### Pronta-Entrega (Fatias e Copos)
+| Produto | Preço |
+| :--- | :---: |
+| **Pudim Clássico Premium no Copo** | R$ 15,00 |
+| **Cheesecake Geleia de Morango** | R$ 17,00 |
+| **Cheesecake Chocolate Belga Amargo** | R$ 17,00 |
+
+### Sob Encomenda (1 dia de antecedência)
+| Produto | Rendimento | Preço |
+| :--- | :---: | :---: |
+| **Tortas Inteiras (sabores disponíveis)** | 14 fatias | R$ 210,00 |
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **HTML5 Semântico:** Estrutura acessível e otimizada para SEO local e compartilhamento em redes sociais.
+- **CSS3 Moderno:** Variáveis CSS (`:root`), Flexbox, CSS Grid, `backdrop-filter`, `mix-blend-mode` e layout responsivo *mobile-first*.
+- **JavaScript (Vanilla ES6+):** Manipulação do DOM, gerenciamento de estado da sacola, persistência local, filtros dinâmicos e montagem da mensagem via API do WhatsApp (`wa.me`).
+- **Tipografia:** *Playfair Display* (títulos) e *Plus Jakarta Sans* (interface e leitura) via Google Fonts.
+
+---
+
+## 📁 Estrutura de Pastas
+
+```text
+morais-e-massa/
+├── index.html          # Estrutura principal, SEO, favicon e drawer da sacola
+├── css/
+│   └── style.css       # Estilização completa (tema preto & dourado + responsividade)
+├── js/
+│   └── script.js       # Catálogo de produtos, lógica da sacola, frete e WhatsApp
+├── img/
+│   ├── moraismassa.png # Logotipo oficial e favicon
+│   └── ...             # Fotos reais dos produtos
+└── README.md           # Documentação do projeto
+```
+
+---
+
+## 💻 Como Rodar e Manter no VS Code
+
+1. **Clonar ou abrir a pasta no VS Code:**
+   ```bash
+   git clone [https://github.com/seu-usuario/morais-e-massa.git](https://github.com/seu-usuario/morais-e-massa.git)
+   cd morais-e-massa
+   code .
+   ```
+
+2. **Visualização em tempo real:**
+   - Utilize a extensão **Live Server** no VS Code (clique com o botão direito em `index.html` > *Open with Live Server*) para testar alterações instantaneamente.
+
+3. **Guia rápido de manutenção:**
+   - **Alterar produtos, preços ou descrições:** Edite o array de itens no arquivo JavaScript (`js/script.js`).
+   - **Alterar taxa de entrega ou número de WhatsApp:** Atualize as constantes de configuração no topo do arquivo JavaScript (`WHATSAPP_NUMBER` e `TAXA_PARNAIBA`).
+   - **Atualizar cores ou fontes:** Ajuste as variáveis dentro de `:root` no início do arquivo `css/style.css`.
+   - **Trocar imagens:** Substitua os arquivos na pasta `img/` mantendo os nomes originais ou atualizando os caminhos no HTML/JS.
+
+---
+
+## 📱 Canais Oficiais da Loja
+
+- **Instagram:** [@moraismassa](https://instagram.com/moraismassa)[cite: 14]
+- **WhatsApp Pedidos:** (86) 99556-3868[cite: 14]
+- **Atendimento:** Todos os dias, das 08h às 22h[cite: 12]
+- **Área de Entrega:** Parnaíba - PI e região[cite: 12, 14]
+
+---
+
+## 👨‍💻 Desenvolvimento
+
+Desenvolvido por **John Alison** — *Gestão da Tecnologia da Informação & Desenvolvimento Web*.
