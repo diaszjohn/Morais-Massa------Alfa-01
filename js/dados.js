@@ -1,70 +1,73 @@
 /* ==========================================================================
-   DADOS DA LOJA E CATÁLOGO DE PRODUTOS — MORAIS & MASSA TORTERIA
+   DADOS E CONFIGURAÇÕES DA LOJA — MORAIS & MASSA TORTERIA
    ========================================================================== */
 
-const LOJA_CONFIG = {
+const LOJA_CONFIG = Object.freeze({
   nome: "Morais & Massa Torteria",
-  whatsapp: "5586995563868",
-  instagram: "@moraismassa",
-  horarioAbertura: 8,    // 08:00
-  horarioFechamento: 22, // 22:00
-  taxaParnaiba: 7.00
-};
+  whatsappNumber: "5586995563868",
+  taxaParnaiba: 7.00,
+  cidadePadrao: "Parnaíba",
+  horaAbertura: 8,
+  horaFechamento: 22,
+  storageKey: "morais_massa_cart_v1"
+});
 
-const PRODUTOS = [
+const PRODUTOS = Object.freeze([
   {
     id: "pudim-copo",
-    nome: "Pudim Clássico Premium (No Copo)",
+    nome: "Pudim Clássico Premium no Copo",
     categoria: "pronta-entrega",
-    badge: "Pronta-entrega",
-    unidade: "Copo individual",
+    badge: "Pronta-Entrega",
+    unidade: "Unidade • Copo",
     preco: 15.00,
-    descricao:
-      "Pudim de leite condensado ultra cremoso, de textura lisa e aveludada, finalizado com uma camada generosa de calda artesanal de caramelo dourado em copo individual lacrado.",
-    imagem: "pudim.jpg"
+    imagem: "img/pudim.jpg",
+    descricao: "Textura extremamente cremosa e aveludada, sem furinhos, finalizado com calda artesanal de caramelo âmbar brilhante."
   },
   {
-    id: "cheesecake-morango-fatia",
+    id: "cheesecake-morango",
     nome: "Cheesecake Geleia de Morango",
     categoria: "pronta-entrega",
-    badge: "Pronta-entrega",
-    unidade: "Fatia individual",
+    badge: "Pronta-Entrega",
+    unidade: "Fatia Individual",
     preco: 17.00,
-    descricao:
-      "Base crocante de biscoito amanteigado com recheio cremoso e equilibrado de cream cheese, coberto por uma camada abundante de geleia artesanal de morango com pedaços da fruta.",
-    imagem: "cheesemorango.jpeg"
+    imagem: "img/cheesemorango.jpeg",
+    descricao: "Base crocante de biscoito amanteigado, creme suave de cream cheese e cobertura generosa de geleia artesanal de morangos frescos."
   },
   {
-    id: "cheesecake-belga-fatia",
+    id: "cheesecake-chocolate",
     nome: "Cheesecake Chocolate Belga Amargo",
     categoria: "pronta-entrega",
-    badge: "Pronta-entrega",
-    unidade: "Fatia individual",
+    badge: "Pronta-Entrega",
+    unidade: "Fatia Individual",
     preco: 17.00,
-    descricao:
-      "Base escura e crocante de cacau, creme suave e aerado de cheesecake, cobertura intensa de ganache e finalização generosa com raspas de chocolate belga amargo.",
-    imagem: "cheesechoc.jpeg"
+    imagem: "img/cheesechoc.jpeg",
+    descricao: "Combinação equilibrada entre a cremosidade do cheesecake tradicional e ganache intensa de chocolate belga meio amargo."
   },
   {
-    id: "torta-morango-inteira",
-    nome: "Torta Inteira — Geleia de Morango",
+    id: "torta-inteira-morango",
+    nome: "Torta Inteira — Geleia de Morango (14 Fatias)",
     categoria: "encomenda",
-    badge: "Sob encomenda (1 dia)",
-    unidade: "Inteira • Rende 14 fatias",
+    badge: "Encomenda • 1 dia",
+    unidade: "Inteira • 14 Fatias",
     preco: 210.00,
-    descricao:
-      "Torta inteira com rendimento de 14 fatias generosas. Base amanteigada, creme de cream cheese e cobertura abundante de geleia artesanal de morango. Pedido com 1 dia de antecedência.",
-    imagem: "cheesemorango.jpeg"
+    imagem: "img/cheesemorango.jpeg",
+    descricao: "Ideal para celebrações e eventos. Rende 14 fatias generosas. Pedido com 1 dia de antecedência e pagamento antecipado."
   },
   {
-    id: "torta-belga-inteira",
-    nome: "Torta Inteira — Chocolate Belga Amargo",
+    id: "torta-inteira-chocolate",
+    nome: "Torta Inteira — Chocolate Belga Amargo (14 Fatias)",
     categoria: "encomenda",
-    badge: "Sob encomenda (1 dia)",
-    unidade: "Inteira • Rende 14 fatias",
+    badge: "Encomenda • 1 dia",
+    unidade: "Inteira • 14 Fatias",
     preco: 210.00,
-    descricao:
-      "Torta inteira com rendimento de 14 fatias generosas. Base de cacau, creme de cheesecake, ganache intenso e raspas de chocolate belga amargo. Pedido com 1 dia de antecedência.",
-    imagem: "cheesechoc.jpeg"
+    imagem: "img/cheesechoc.jpeg",
+    descricao: "Nossa receita assinatura de chocolate belga amargo em tamanho inteiro (14 fatias). Pedido com 1 dia de antecedência e pagamento antecipado."
   }
-];
+]);
+
+function tentarProximoCaminhoImagem(imgEl) {
+  if (!imgEl) return;
+  if (imgEl.src.includes("img/")) {
+    imgEl.src = "moraismassa.png";
+  }
+}

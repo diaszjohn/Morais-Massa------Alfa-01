@@ -1,61 +1,49 @@
 /* ==========================================================================
-   REGRAS DE NEGÓCIO, FORMATAÇÃO E INTEGRAÇÃO WHATSAPP
+   REGRAS DE NEGÓCIO E FORMATAÇÃO — MORAIS & MASSA TORTERIA
    ========================================================================== */
 
-const Regras = {
-  formatarMoeda(valor) {
+const Regras = (() => {
+  function formatarMoeda(valor) {
     return valor.toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL"
     });
-  },
+  }
 
-  verificarStatusLoja() {
-    const agora = new Date();
-    const horaAtual = agora.getHours();
-    const aberta =
-      horaAtual >= LOJA_CONFIG.horarioAbertura &&
-      horaAtual < LOJA_CONFIG.horarioFechamento;
+  function sanitizarTexto(str, maxLen = 120) {
+    if (typeof str !== "string") return "";
+    return str
+      .replace(/[\u0000-\u001F\u007F]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, maxLen);
+  }
 
+  function verificarStatusLoja() {
+    const hora = new Date().getHours();
+    const aberta = hora >= LOJA_CONFIG.horaAbertura && hora < LOJA_CONFIG.horaFechamento;
     return {
       aberta,
-      texto: aberta
-        ? "Aberto agora • 08h às 22h"
-        : "Fechado • Aceitando encomendas"
+      texto: aberta ? "Aberto agora • 08h às 22h" : "Fechado agora • Abre às 08h"
     };
-  },
+  }
 
-  calcularFrete(cidadeSelecionada) {
-    if (cidadeSelecionada === "Parnaíba") {
-      return {
-        valor: LOJA_CONFIG.taxaParnaiba,
-        texto: this.formatarMoeda(LOJA_CONFIG.taxaParnaiba),
-        fixo: true
-      };
-    }
+  function calcularResumo(subtotal, cidade) {
+    const isParnaiba = cidade === LOJA_CONFIG.cidadePadrao;
+    const frete = isParnaiba ? LOJA_CONFIG.taxaParnaiba : 0;
+    const total = subtotal + frete;
 
     return {
-      valor: 0,
-      texto: "A consultar",
-      fixo: false
+      subtotalNumerico: subtotal,
+      subtotalTexto: formatarMoeda(subtotal),
+      freteNumerico: frete,
+      freteTexto: isParnaiba ? formatarMoeda(LOJA_CONFIG.taxaParnaiba) : "A consultar",
+      totalNumerico: total,
+      totalTexto: isParnaiba ? formatarMoeda(total) : `${formatarMoeda(subtotal)} + frete`
     };
-  },
+  }
 
-  calcularResumo(subtotal, cidadeSelecionada) {
-    const frete = this.calcularFrete(cidadeSelecionada);
-    const totalNumerico = subtotal + frete.valor;
-
-    return {
-      subtotalTexto: this.formatarMoeda(subtotal),
-      freteTexto: frete.texto,
-      totalNumerico,
-      totalTexto: frete.fixo
-        ? this.formatarMoeda(totalNumerico)
-        : `${this.formatarMoeda(subtotal)} + frete`
-    };
-  },
-
-  gerarLinkWhatsApp(dadosPedido) {
+  function gerarLinkWhatsApp(dados) {
     const {
       itens,
       subtotal,
@@ -70,62 +58,65 @@ const Regras = {
       precisaTroco,
       valorTroco,
       observacoes
-    } = dadosPedido;
+    } = dados;
 
-    const temEncomenda = itens.some((item) => item.categoria === "encomenda");
-    const resumo = this.calcularResumo(subtotal, cidade);
-    const destinoTexto =
-      cidade === "Parnaíba"
-        ? "Parnaíba (PHB)"
-        : `${outraCidade.trim()} (Outra cidade/região)`;
+    const cidadeFinal = cidade === "Outra" ? sanitizarTexto(outraCidade, 50) : cidade;
+    const resumo = calcularResumo(subtotal, cidade);
 
-    const listaItensTexto = itens
-      .map(
-        (item) =>
-          `• ${item.qtd}x ${item.nome} (${item.unidade}) — ${this.formatarMoeda(
-            item.preco * item.qtd
-          )}`
-      )
+    const itensLinhas = itens
+      .map((item) => {
+        const tipo = item.categoria === "encomenda" ? " [ENCOMENDA]" : "";
+        return `• ${item.qtd}x ${item.nome}${tipo} — ${formatarMoeda(item.preco * item.qtd)}`;
+      })
       .join("\n");
 
-    let pagamentoTexto = `💳 *Pagamento:* ${formaPagamento}`;
+    let trocoLinha = "";
     if (formaPagamento === "Dinheiro") {
       if (precisaTroco === "sim") {
-        const valorFormatado = this.formatarMoeda(Number(valorTroco));
-        pagamentoTexto += ` (Troco para ${valorFormatado})`;
+        trocoLinha = `\n• Troco para: ${sanitizarTexto(valorTroco, 30)}`;
       } else {
-        pagamentoTexto += " (Não precisa de troco)";
+        trocoLinha = "\n• Troco: Não precisa";
       }
     }
 
+    const temEncomenda = itens.some((i) => i.categoria === "encomenda");
     const avisoEncomenda = temEncomenda
-      ? "\n⚠️ *ATENÇÃO:* Pedido contém *Torta Inteira sob encomenda* (1 dia de antecedência + pagamento antecipado).\n"
+      ? "\n\n⚠️ *Pedido contém item sob encomenda (1 dia de antecedência e pagamento antecipado).*"
       : "";
 
-    const obsTexto = observacoes.trim()
-      ? `\n📝 *Observações:* ${observacoes.trim()}`
-      : "";
+    const mensagem = [
+      "🍰 *NOVO PEDIDO — MORAIS & MASSA TORTERIA*",
+      "",
+      "*Itens do Pedido:*",
+      itensLinhas,
+      "",
+      "*Resumo:*",
+      `• Subtotal: ${resumo.subtotalTexto}`,
+      `• Entrega (${cidadeFinal}): ${resumo.freteTexto}`,
+      `• *Total: ${resumo.totalTexto}*`,
+      "",
+      "*Dados para Delivery:*",
+      `• Cliente: ${sanitizarTexto(nomeCliente, 80)}`,
+      `• Endereço: ${sanitizarTexto(rua, 100)}, Nº ${sanitizarTexto(numero, 20)} — ${sanitizarTexto(bairro, 60)}`,
+      `• Cidade: ${cidadeFinal}`,
+      referencia ? `• Referência/Obs: ${sanitizarTexto(referencia, 120)}` : null,
+      observacoes ? `• Observações do pedido: ${sanitizarTexto(observacoes, 150)}` : null,
+      "",
+      "*Pagamento:*",
+      `• Forma: ${formaPagamento}${trocoLinha}`,
+      avisoEncomenda
+    ]
+      .filter((l) => l !== null)
+      .join("\n");
 
-    const mensagem = `*NOVO PEDIDO — MORAIS & MASSA TORTERIA* 🍰
-${avisoEncomenda}
-*Itens do Pedido:*
-${listaItensTexto}
-
-*Resumo de Valores:*
-Subtotal: ${resumo.subtotalTexto}
-Entrega (${destinoTexto}): ${resumo.freteTexto}
-*Total: ${resumo.totalTexto}*
-
-📍 *Endereço de Entrega (Delivery):*
-${rua.trim()}, Nº ${numero.trim()} — ${bairro.trim()}
-Cidade: ${destinoTexto}
-Ref.: ${referencia.trim() || "Não informada"}
-
-👤 *Cliente:* ${nomeCliente.trim()}
-${pagamentoTexto}${obsTexto}`;
-
-    return `https://wa.me/${LOJA_CONFIG.whatsapp}?text=${encodeURIComponent(
-      mensagem
-    )}`;
+    return `https://wa.me/${LOJA_CONFIG.whatsappNumber}?text=${encodeURIComponent(mensagem)}`;
   }
-};
+
+  return {
+    formatarMoeda,
+    sanitizarTexto,
+    verificarStatusLoja,
+    calcularResumo,
+    gerarLinkWhatsApp
+  };
+})();
